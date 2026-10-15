@@ -1,0 +1,6 @@
+  tab   TAB  
+words	terms
+line row
+numbers digits
+end finish
+and plus
