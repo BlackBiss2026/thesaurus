@@ -42,13 +42,17 @@ else
 fi
 
 if [[ -n "$GITHUB_STEP_SUMMARY" ]]; then
+    # the comment goes on the last commit that changed src/, so link to that one
+    [[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" == true ]] && git fetch -q --unshallow 2>/dev/null
+    code_sha="$(git log -1 --format=%H -- src 2>/dev/null)"
+    [[ -z "$code_sha" ]] && code_sha="$GITHUB_SHA"
     {
         if [[ $result == PASS ]]; then
             echo "## ✅ עבר"
         else
             echo "## ❌ לא עבר"
             echo
-            echo "ניתן לצפות בהערות שלך כאן (יופיעו תוך כשעה): https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+            echo "ניתן לצפות בהערות שלך כאן (יופיעו תוך כשעה): https://github.com/$GITHUB_REPOSITORY/commit/$code_sha"
             echo
             echo "בהצלחה!"
         fi
