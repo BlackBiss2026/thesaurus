@@ -90,7 +90,7 @@ tests/run_tests.sh 02_several_words   # בדיקה אחת
 2. בראש העמוד הזה לחצו על הכפתור הירוק **Use this template** ← **Create a new repository**.
 3. מלאו:
    - **Owner:** `BlackBiss2026` (לא החשבון הפרטי שלכם!)
-   - **Repository name:** `thesaurus-<שם המשתמש שלכם בגיטהאב>`, למשל `thesaurus-dana-cohen`
+   - **Repository name:** כל שם שתרצו, למשל `thesaurus`
    - **Private**
 4. `git clone` למאגר החדש, ועובדים בו.
 
