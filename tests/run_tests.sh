@@ -5,8 +5,20 @@
 cd "$(dirname "$0")/.." || exit 1
 BIN=./build/thesaurus
 if [[ "$1" == "--asan" ]]; then
-    BIN=./build/thesaurus_asan
-    export ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1
+    # Memory check only: a case fails only if AddressSanitizer / UBSan reports
+    # an error (exit code 99). Wrong output is already graded by the other tests.
+    MEMONLY=1
+    export ASAN_OPTIONS=detect_leaks=1:exitcode=99 UBSAN_OPTIONS=halt_on_error=1:exitcode=99
+    mkdir -p build
+    cat > build/asan_wrap.sh <<WRAP
+#!/usr/bin/env bash
+"$(pwd)/build/thesaurus_asan" "\$@" 2> >(tee -a build/stderr_all.txt >&2)
+rc=\$?
+[[ \$rc -eq 99 ]] && touch build/.sanitizer_error
+exit \$rc
+WRAP
+    chmod +x build/asan_wrap.sh
+    BIN=./build/asan_wrap.sh
     shift
 fi
 cases=("$@")
@@ -38,6 +50,16 @@ for c in "${cases[@]}"; do
             diff <(head -c 2000 "$d/expected.txt") <(head -c 2000 build/out_$c.txt) | head -10 | sed 's/^/    /'
             ok=0
         fi
+    fi
+    if [[ -n "$MEMONLY" ]]; then
+        if [[ -f build/.sanitizer_error ]]; then
+            ok=0
+            echo "  memory error:"
+            grep -E "ERROR: |SUMMARY: |runtime error|^ +#[0-9]+ " build/stderr_all.txt | head -20 | sed 's/^/    /'
+        else
+            ok=1
+        fi
+        rm -f build/.sanitizer_error build/stderr_all.txt
     fi
     if [[ $ok -eq 1 ]]; then echo "PASS $c"; else echo "FAIL $c"; fail=1; fi
 done

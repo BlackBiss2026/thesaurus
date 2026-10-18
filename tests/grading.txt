@@ -1,13 +1,13 @@
-# id | display name | points | command
-build          | Build (compiles)                          | 5  | make -s build/thesaurus
-no_warnings    | No compiler warnings (-Werror)            | 5  | make -s werror
-example        | Example from the booklet (drink)          | 10 | make -s build/thesaurus && tests/run_tests.sh 01_example
-several_words  | Several words, first synonym, duplicates  | 10 | make -s build/thesaurus && tests/run_tests.sh 02_several_words
-no_match       | Nothing to replace                        | 5  | make -s build/thesaurus && tests/run_tests.sh 03_no_match
-whole_words    | Whole words only, case-sensitive          | 10 | make -s build/thesaurus && tests/run_tests.sh 04_whole_words_case
-whitespace     | Tabs, CRLF, digits, no final newline      | 10 | make -s build/thesaurus && tests/run_tests.sh 05_whitespace_and_symbols
-empty_files    | Empty text / empty thesaurus              | 5  | make -s build/thesaurus && tests/run_tests.sh 06_empty_text 07_empty_thesaurus
-long_words     | Very long words (thousands of letters)    | 10 | make -s build/thesaurus && tests/run_tests.sh 08_long_words
-big            | Big input (1.5 MB text, 20000 entries)    | 10 | make -s build/thesaurus && tests/run_tests.sh 09_big
-errors         | Errors: bad arguments / missing files     | 10 | make -s build/thesaurus && tests/run_tests.sh errors
-memory         | Memory: no leaks / invalid access (ASan)  | 10 | make -s build/thesaurus_asan && tests/run_tests.sh --asan 01_example 02_several_words 05_whitespace_and_symbols 06_empty_text 08_long_words errors
+# id | check name | command
+build          | Build (compiles)                          | make -s build/thesaurus
+no_warnings    | No compiler warnings (-Werror)            | make -s werror
+example        | Example from the booklet (drink)          | make -s build/thesaurus && tests/run_tests.sh 01_example
+several_words  | Several words, first synonym, duplicates  | make -s build/thesaurus && tests/run_tests.sh 02_several_words
+no_match       | Nothing to replace                        | make -s build/thesaurus && tests/run_tests.sh 03_no_match
+whole_words    | Whole words only, case-sensitive          | make -s build/thesaurus && tests/run_tests.sh 04_whole_words_case
+whitespace     | Tabs, CRLF, digits, no final newline      | make -s build/thesaurus && tests/run_tests.sh 05_whitespace_and_symbols
+empty_files    | Empty text / empty thesaurus              | make -s build/thesaurus && tests/run_tests.sh 06_empty_text 07_empty_thesaurus
+long_words     | Very long words (thousands of letters)    | make -s build/thesaurus && tests/run_tests.sh 08_long_words
+big            | Big input (1.5 MB text, 20000 entries)    | make -s build/thesaurus && tests/run_tests.sh 09_big
+errors         | Errors: bad arguments / missing files     | make -s build/thesaurus && tests/run_tests.sh errors
+memory         | Memory: no leaks / invalid access (ASan)  | make -s build/thesaurus_asan && tests/run_tests.sh --asan 01_example 02_several_words 05_whitespace_and_symbols 06_empty_text 08_long_words errors
