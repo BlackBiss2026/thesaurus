@@ -23,7 +23,15 @@ while IFS='|' read -r id name pts cmd; do
         rows+="| ✅ | $name | $pts/$pts |"$'\n'
     else
         printf '  \033[31mFAIL\033[0m %3d/%-3d %s\n' 0 "$pts" "$name"
-        [[ $verbose -eq 1 ]] && tail -25 "$log" | sed 's/^/        /'
+        if [[ $verbose -eq 1 ]]; then
+            if grep -q "Sanitizer" "$log"; then
+                # keep what matters from a sanitizer report: the error, the stack, the summary
+                grep -E "FAIL|ERROR: |SUMMARY: |^ +#[0-9]+ .* in " "$log" \
+                    | grep -vE "libasan|libubsan|/usr/lib|libc_start" | head -30 | sed 's/^/        /'
+            else
+                tail -25 "$log" | sed 's/^/        /'
+            fi
+        fi
         rows+="| ❌ | $name | 0/$pts |"$'\n'
     fi
 done < tests/grading.txt
