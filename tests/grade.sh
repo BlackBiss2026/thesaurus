@@ -52,7 +52,7 @@ if [[ -n "$GITHUB_STEP_SUMMARY" ]]; then
         else
             echo "## ❌ לא עבר"
             echo
-            echo "ניתן לצפות בהערות שלך כאן (יופיעו תוך כשעה): https://github.com/$GITHUB_REPOSITORY/commit/$code_sha"
+            echo "ניתן לצפות בהערות שלך כאן (יופיעו תוך כמה דקות): https://github.com/$GITHUB_REPOSITORY/commit/$code_sha"
             echo
             echo "בהצלחה!"
         fi
