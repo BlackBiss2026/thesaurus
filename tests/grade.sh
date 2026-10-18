@@ -9,7 +9,6 @@ verbose=0
 [[ "$1" == "-v" || -n "$GITHUB_ACTIONS" ]] && verbose=1
 total=0
 failed=0
-rows=""
 log="$(mktemp)"
 while IFS='|' read -r id name cmd; do
     id="$(echo "$id" | xargs)"
@@ -18,7 +17,6 @@ while IFS='|' read -r id name cmd; do
     total=$((total + 1))
     if timeout 300 bash -c "$cmd" > "$log" 2>&1; then
         printf '  \033[32mPASS\033[0m  %s\n' "$name"
-        rows+="| ✅ | $name |"$'\n'
     else
         failed=$((failed + 1))
         printf '  \033[31mFAIL\033[0m  %s\n' "$name"
@@ -31,7 +29,6 @@ while IFS='|' read -r id name cmd; do
                 tail -25 "$log" | sed 's/^/        /'
             fi
         fi
-        rows+="| ❌ | $name |"$'\n'
     fi
 done < tests/grading.txt
 rm -f "$log"
@@ -47,14 +44,14 @@ fi
 if [[ -n "$GITHUB_STEP_SUMMARY" ]]; then
     {
         if [[ $result == PASS ]]; then
-            echo "## ✅ עבר – כל הבדיקות הצליחו"
+            echo "## ✅ עבר"
         else
-            echo "## ❌ לא עבר – $failed מתוך $total בדיקות נכשלו"
+            echo "## ❌ לא עבר"
+            echo
+            echo "ניתן לצפות בהערות שלך כאן (יופיעו תוך כשעה): https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+            echo
+            echo "בהצלחה!"
         fi
-        echo
-        echo "| | Check |"
-        echo "|---|---|"
-        printf '%s' "$rows"
     } >> "$GITHUB_STEP_SUMMARY"
 fi
 if [[ -n "$GITHUB_ACTIONS" ]]; then
